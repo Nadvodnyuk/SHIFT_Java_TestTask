@@ -1,2 +1,7 @@
 target/
 .idea/
+in1.txt
+in2.txt
+**/*integers.txt
+**/*floats.txt
+**/*strings.txt
