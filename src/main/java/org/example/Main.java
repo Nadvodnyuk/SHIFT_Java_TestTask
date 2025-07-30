@@ -16,15 +16,21 @@ public class Main {
             String prefix = "";
             String line;
 
+            int lineCount = 0;
+
             boolean addToFileFlag = false;
+            boolean shortStatsFlag = false;
+            boolean fullStatsFlag = false;
 
             List<String> inputFiles = new ArrayList<>();
 
-            StringBuilder intContent = new StringBuilder();
-            StringBuilder strContent = new StringBuilder();
+            StringBuilder integersContent = new StringBuilder();
+            StringBuilder floatsContent = new StringBuilder();
+            StringBuilder stringsContent = new StringBuilder();
 
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
+                    //"Дополнительно с помощью опции -o нужно уметь задавать путь для результатов."
                     case "-o":
                         if (i + 1 < args.length) {
                             outputDir = args[++i];
@@ -33,9 +39,7 @@ public class Main {
                             return;
                         }
                         break;
-                    case "-a":
-                        addToFileFlag = true;
-                        break;
+                    //"Опция -p задает префикс имен выходных файлов."
                     case "-p":
                         if (i + 1 < args.length) {
                             prefix = args[++i];
@@ -43,6 +47,17 @@ public class Main {
                             System.err.println("Ошибка: после -p не передан префикс.");
                             return;
                         }
+                        break;
+                    //"С помощью опции -a можно задать режим добавления в существующие файлы."
+                    case "-a":
+                        addToFileFlag = true;
+                        break;
+                    //Статистика двух видов: краткая и полная. "Выбор статистики производится опциями -s и -f соответственно:"
+                    case "-s":
+                        shortStatsFlag = true;
+                        break;
+                    case "-f":
+                        fullStatsFlag = true;
                         break;
                     default:
                         inputFiles.add(args[i]);
@@ -69,28 +84,42 @@ public class Main {
                         BufferedReader reader = new BufferedReader(new FileReader(inputFile))
                 ) {
                     while ((line = reader.readLine()) != null) {
+                        lineCount++;
                         if (line.matches("-?\\d+")) {
-                            intContent.append("Целые числа: ").append(line).append("\n");
+                            integersContent.append("Целые числа: ").append(line).append("\n");
                         } else {
-                            strContent.append("Строки: ").append(line).append("\n");
+                            stringsContent.append("Строки: ").append(line).append("\n");
                         }
                     }
                 }
             }
 
-            if (intContent.length() > 0) {
+            if (integersContent.length() > 0) {
                 try (BufferedWriter intWriter = new BufferedWriter(
                         new FileWriter(intFile, addToFileFlag))) {
-                    intWriter.write(intContent.toString());
+                    intWriter.write(integersContent.toString());
                 }
             }
 
-            if (strContent.length() > 0) {
+            if (stringsContent.length() > 0) {
                 try (BufferedWriter strWriter = new BufferedWriter(
                         new FileWriter(strFile, addToFileFlag))) {
-                    strWriter.write(strContent.toString());
+                    strWriter.write(stringsContent.toString());
                 }
             }
+
+
+            //"-s Краткая статистика содержит только количество элементов, записанных в исходящие файлы"
+            if(shortStatsFlag == true){
+                System.out.println("Количество элементов, записанных в исходящие файлы" + lineCount);
+            }
+
+            //"-f Полная статистика для чисел дополнительно содержит минимальное и максимальное значения, сумма и среднее."
+
+
+            //"-f Полная статистика для строк, помимо их количества, содержит также размер самой короткой строки и самой длинной."
+
+
 
         } catch (IOException e) {
             System.err.println("Ошибка: ввод/вывод: " + e.getMessage());
