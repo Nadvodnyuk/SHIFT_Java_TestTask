@@ -38,6 +38,13 @@ public class Stats {
         stringsMaxLength = Math.max(stringsMaxLength, value.length());
     }
 
+    public String getShortStats() {
+        return String.format(
+                "Целые: %d, " + "Вещественные: %d, " + "Строки: %d",
+                integersCount, floatsCount, stringsCount
+        );
+    }
+
     public String getFullStats() {
         StringBuilder results = new StringBuilder();
         if (integersCount == 0) {
