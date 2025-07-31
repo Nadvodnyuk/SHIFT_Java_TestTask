@@ -16,7 +16,7 @@ public class Main {
             String prefix = "";
             String line;
 
-            int lineCount = 0;
+            Stats currStats = new Stats();
 
             boolean addToFileFlag = false;
             boolean shortStatsFlag = false;
@@ -65,9 +65,6 @@ public class Main {
                 }
             }
 
-            String intFile = outputDir + "/" + prefix + "integers.txt";
-            String strFile = outputDir + "/" + prefix + "strings.txt";
-
             if (!outputDir.equals(".")){
                 File dir = new File(outputDir);
                 if (!dir.exists()) {
@@ -84,42 +81,57 @@ public class Main {
                         BufferedReader reader = new BufferedReader(new FileReader(inputFile))
                 ) {
                     while ((line = reader.readLine()) != null) {
-                        lineCount++;
-                        if (line.matches("-?\\d+")) {
+                        if (line.matches("[-+]?\\d+")) {
+                            currStats.addInteger(Long.parseLong(line));
                             integersContent.append("Целые числа: ").append(line).append("\n");
+
+                        } else if(line.matches("[-+]?\\d*\\.\\d+") || line.matches("[-+]?\\d+(\\.\\d+)?[eE][-+]?\\d+")){
+                            currStats.addFloat(Double.parseDouble(line));
+                            floatsContent.append("Вещественные числа: ").append(line).append("\n");
+
                         } else {
+                            currStats.addString(line);
                             stringsContent.append("Строки: ").append(line).append("\n");
                         }
                     }
                 }
             }
 
+            String integersFile = outputDir + "/" + prefix + "integers.txt";
+            String floatsFile = outputDir + "/" + prefix + "floats.txt";
+            String stringsFile = outputDir + "/" + prefix + "strings.txt";
+
             if (integersContent.length() > 0) {
-                try (BufferedWriter intWriter = new BufferedWriter(
-                        new FileWriter(intFile, addToFileFlag))) {
-                    intWriter.write(integersContent.toString());
+                try (BufferedWriter integersWriter = new BufferedWriter(
+                        new FileWriter(integersFile, addToFileFlag))) {
+                    integersWriter.write(integersContent.toString());
+                }
+            }
+
+            if (floatsContent.length() > 0) {
+                try (BufferedWriter floatsWriter = new BufferedWriter(
+                        new FileWriter(floatsFile, addToFileFlag))) {
+                    floatsWriter.write(floatsContent.toString());
                 }
             }
 
             if (stringsContent.length() > 0) {
-                try (BufferedWriter strWriter = new BufferedWriter(
-                        new FileWriter(strFile, addToFileFlag))) {
-                    strWriter.write(stringsContent.toString());
+                try (BufferedWriter stringsWriter = new BufferedWriter(
+                        new FileWriter(stringsFile, addToFileFlag))) {
+                    stringsWriter.write(stringsContent.toString());
                 }
             }
 
-
             //"-s Краткая статистика содержит только количество элементов, записанных в исходящие файлы"
-            if(shortStatsFlag == true){
-                System.out.println("Количество элементов, записанных в исходящие файлы" + lineCount);
+            if(shortStatsFlag || fullStatsFlag){
+                System.out.println("Количество элементов, записанных в исходящие файлы: " + currStats.getTotalCount());
             }
 
             //"-f Полная статистика для чисел дополнительно содержит минимальное и максимальное значения, сумма и среднее."
-
-
-            //"-f Полная статистика для строк, помимо их количества, содержит также размер самой короткой строки и самой длинной."
-
-
+            //"Полная статистика для строк, помимо их количества, содержит также размер самой короткой строки и самой длинной."
+            if(fullStatsFlag){
+                System.out.println(currStats.getFullStats());
+            }
 
         } catch (IOException e) {
             System.err.println("Ошибка: ввод/вывод: " + e.getMessage());
