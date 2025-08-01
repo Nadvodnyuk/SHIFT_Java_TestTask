@@ -4,14 +4,19 @@
  - Java 17 (JDK)
  - Управление зависимостями: Apache Maven 3.9.7
 
-### Пример запуска
+### Запуск
 
 ```bash
 mvn clean package
 
-java -jar target/SHIFT_Java_TestTask.jar -p result_ in1.txt in2.txt -f -a -o /some/path
+java -jar target/SHIFT_Java_TestTask.jar -p {префикс имен выходных файлов} {входные файлы} -s -f -a -o {путь для результатов}
 ```
 
+### Например
+
+```bash
+java -jar target/SHIFT_Java_TestTask.jar -o /some/path -p result_ -a -f in1.txt in2.txt
+```
 
 ## Задание
 При запуске утилиты в командной строке подается несколько файлов, содержащих вперемешку целые числа, строки и вещественные числа. В качестве разделителя используется перевод строки. Строки из файлов читаются по очереди в соответствии с их перечислением в командной строке.
