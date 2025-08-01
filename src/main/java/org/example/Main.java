@@ -20,7 +20,10 @@ public class Main {
             StringBuilder stringsContent = new StringBuilder();
 
             String outputDir = options.getOutputDir();
+            OutputFiles.outputDirCheck(outputDir);
+
             String prefix = options.getPrefix();
+            String outputFileName = outputDir + "/" + prefix;
 
             boolean addToFileFlag = options.isAddToFileFlag();
             boolean shortStatsFlag = options.isShortStatsFlag();
@@ -28,10 +31,7 @@ public class Main {
 
             List<String> inputFiles = options.getInputFiles();
 
-            OutputFiles.outputDirCheck(outputDir);
             OutputFiles.lineParser(inputFiles, currStats, integersContent, floatsContent, stringsContent);
-
-            String outputFileName = outputDir + "/" + prefix;
 
             OutputFiles.writeToFile(outputFileName + "integers.txt", integersContent, addToFileFlag);
             OutputFiles.writeToFile(outputFileName + "floats.txt", floatsContent, addToFileFlag);

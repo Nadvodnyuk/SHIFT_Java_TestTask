@@ -9,7 +9,11 @@ public class OutputFiles {
             File dir = new File(outputDir);
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
-                    throw new IllegalArgumentException("Не получилось создать каталог: " + outputDir);
+                    throw new IllegalArgumentException("Ошибка: не получилось создать каталог: " + outputDir);
+                }
+            }else{
+                if (!dir.isDirectory()) {
+                    throw new IllegalArgumentException("Ошибка: не получилось создать каталог, не директория:" + outputDir);
                 }
             }
         }

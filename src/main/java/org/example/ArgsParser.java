@@ -15,6 +15,9 @@ public class ArgsParser {
 
     public ArgsParser(String[] args) {
         parseAllArgs(args);
+        if (inputFiles.isEmpty()) {
+            throw new IllegalArgumentException("Ошибка: не переданы входные файлы.");
+        }
     }
 
     private void parseAllArgs(String[] args){
@@ -23,7 +26,11 @@ public class ArgsParser {
                 //"Дополнительно с помощью опции -o нужно уметь задавать путь для результатов."
                 case "-o":
                     if (i + 1 < args.length) {
-                        outputDir = args[++i];
+                        String value = args[++i];
+                        if (isFlag(value)) {
+                            throw new IllegalArgumentException("Ошибка: после -o должен быть путь, а не флаг.");
+                        }
+                        outputDir = value;
                     } else {
                         throw new IllegalArgumentException("Ошибка: после -o не передан путь.");
                     }
@@ -31,7 +38,11 @@ public class ArgsParser {
                 //"Опция -p задает префикс имен выходных файлов."
                 case "-p":
                     if (i + 1 < args.length) {
-                        prefix = args[++i];
+                        String value = args[++i];
+                        if (isFlag(value)) {
+                            throw new IllegalArgumentException("Ошибка: после -p должен быть путь, а не флаг.");
+                        }
+                        prefix = value;
                     } else {
                         throw new IllegalArgumentException("Ошибка: после -p не передан префикс.");
                     }
@@ -52,6 +63,10 @@ public class ArgsParser {
                     break;
             }
         }
+    }
+
+    private boolean isFlag(String arg) {
+        return arg.equals("-o") || arg.equals("-p") || arg.equals("-a") || arg.equals("-s") || arg.equals("-f");
     }
 
     public String getOutputDir() {
