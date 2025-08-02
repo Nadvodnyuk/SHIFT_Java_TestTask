@@ -19,6 +19,13 @@ public class OutputFiles {
         }
     }
 
+    private static void appendContent(StringBuilder content, String line) {
+        if (content.length() > 0) {
+            content.append("\n");
+        }
+        content.append(line);
+    }
+
     public static void lineParser (List<String> inputFiles,
                             Stats currStats,
                             StringBuilder integersContent,
@@ -34,29 +41,24 @@ public class OutputFiles {
                     if (line.isEmpty()) {
                         continue;
                     }
-                    if (line.matches("[-+]?\\d+")) {
-                        currStats.addInteger(Long.parseLong(line));
-                        if (integersContent.length() > 0) {
-                            integersContent.append("\n");
-                        }
-                        integersContent.append(line);
+                    try {
+                        long value = Long.parseLong(line);
+                        currStats.addInteger(value);
+                        appendContent(integersContent, line);
+                        continue;
+                    } catch (NumberFormatException ignored) {}
 
-                    } else if(line.matches("[-+]?\\d*\\.\\d+") ||
-                            line.matches("[-+]?\\d+\\.\\d*") ||
-                            line.matches("[-+]?\\d+(\\.\\d+)?[eE][-+]?\\d+")){
-                        currStats.addFloat(Double.parseDouble(line));
-                        if (floatsContent.length() > 0) {
-                            floatsContent.append("\n");
+                    try {
+                        double value = Double.parseDouble(line);
+                        if (Double.isFinite(value) && !line.matches("[-+]?\\d+")) {
+                            currStats.addFloat(value);
+                            appendContent(floatsContent, line);
+                            continue;
                         }
-                        floatsContent.append(line);
+                    } catch (NumberFormatException ignored) {}
 
-                    } else {
-                        currStats.addString(line);
-                        if (stringsContent.length() > 0) {
-                            stringsContent.append("\n");
-                        }
-                        stringsContent.append(line);
-                    }
+                    currStats.addString(line);
+                    appendContent(stringsContent, line);
                 }
             } catch (IOException e) {
                 System.err.println("Ошибка: чтение файла " + inputFile + ": " + e.getMessage());
@@ -68,6 +70,8 @@ public class OutputFiles {
         if (content.length() == 0) return;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, addToFileFlag))) {
             writer.write(content.toString());
+        } catch (IOException e) {
+            System.err.println("Ошибка: нельзя записать в файл " + filename + ": " + e.getMessage());
         }
     }
 }
