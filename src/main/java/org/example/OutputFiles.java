@@ -24,24 +24,38 @@ public class OutputFiles {
                             StringBuilder integersContent,
                             StringBuilder floatsContent,
                             StringBuilder stringsContent) throws IOException {
-
+        String line;
         for (String inputFile: inputFiles){
             try (
                     BufferedReader reader = new BufferedReader(new FileReader(inputFile))
             ) {
-                String line;
                 while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.isEmpty()) {
+                        continue;
+                    }
                     if (line.matches("[-+]?\\d+")) {
                         currStats.addInteger(Long.parseLong(line));
-                        integersContent.append(line).append("\n");
+                        if (integersContent.length() > 0) {
+                            integersContent.append("\n");
+                        }
+                        integersContent.append(line);
 
-                    } else if(line.matches("[-+]?\\d*\\.\\d+") || line.matches("[-+]?\\d+(\\.\\d+)?[eE][-+]?\\d+")){
+                    } else if(line.matches("[-+]?\\d*\\.\\d+") ||
+                            line.matches("[-+]?\\d+\\.\\d*") ||
+                            line.matches("[-+]?\\d+(\\.\\d+)?[eE][-+]?\\d+")){
                         currStats.addFloat(Double.parseDouble(line));
-                        floatsContent.append(line).append("\n");
+                        if (floatsContent.length() > 0) {
+                            floatsContent.append("\n");
+                        }
+                        floatsContent.append(line);
 
                     } else {
                         currStats.addString(line);
-                        stringsContent.append(line).append("\n");
+                        if (stringsContent.length() > 0) {
+                            stringsContent.append("\n");
+                        }
+                        stringsContent.append(line);
                     }
                 }
             } catch (IOException e) {

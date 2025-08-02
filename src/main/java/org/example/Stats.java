@@ -50,14 +50,14 @@ public class Stats {
         if (integersCount == 0) {
             results.append("Нет целых чисел.\n");
         } else {
-            results.append(String.format("Целые: \n Количество = %d, min = %d, max = %d, сумма = %d, среднее = %.2f\n",
+            results.append(String.format("Целые: \n Количество = %d, min = %d, max = %d, сумма = %d, среднее = %.10f\n",
                     integersCount, integersMin, integersMax, integersSum, integersSum / (double) integersCount));
         }
 
         if (floatsCount == 0) {
             results.append("Нет вещественных чисел.\n");
         } else {
-            results.append(String.format("Вещественные: \n Количество = %d, min = %.2f, max = %.2f, сумма = %.2f, среднее = %.2f\n",
+            results.append(String.format("Вещественные: \n Количество = %d, min = %.10f, max = %.10f, сумма = %.10f, среднее = %.10f\n",
                     floatsCount, floatsMin, floatsMax, floatsSum, floatsSum / (double) floatsCount));
         }
 
@@ -73,5 +73,21 @@ public class Stats {
 
     public int getTotalCount() {
         return integersCount + floatsCount + stringsCount;
+    }
+
+    public int getIntegersCount() {
+        return integersCount;
+    }
+
+    public long getIntegersSum() {
+        return integersSum;
+    }
+
+    public int getFloatsCount() {
+        return floatsCount;
+    }
+
+    public int getStringsCount() {
+        return stringsCount;
     }
 }
