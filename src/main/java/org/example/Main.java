@@ -31,6 +31,7 @@ public class Main {
 
             List<String> inputFiles = options.getInputFiles();
 
+            // Допущение: если числа выходят за границы long или double, то записываются как строки
             OutputFiles.lineParser(inputFiles, currStats, integersContent, floatsContent, stringsContent);
 
             OutputFiles.writeToFile(outputFileName + "integers.txt", integersContent, addToFileFlag);

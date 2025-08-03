@@ -42,6 +42,7 @@ public class OutputFiles {
                         continue;
                     }
                     try {
+                        // если числа выходят за границы long или double, то записываются как строки
                         long value = Long.parseLong(line);
                         currStats.addInteger(value);
                         appendContent(integersContent, line);
